@@ -2,8 +2,8 @@ import React, {ChangeEvent, FC, useState} from "react";
 import useMousetrap from "react-hook-mousetrap";
 
 // helpers
-import {DifficultyLabels, DifficultyNames, DifficultyValues} from "src/utils/constants";
-import {DIFFICULTY_NUMBERS} from "src/utils/interfaces";
+import {DifficultyLabels, DifficultyNames} from "src/utils/constants";
+import {DIFFICULTY_TYPES} from "src/utils/interfaces";
 
 // components
 import {Radio, Button} from "src/components";
@@ -12,17 +12,19 @@ import {Radio, Button} from "src/components";
 import {ConfirmationButtons, ModalWrapper} from "./styles";
 
 interface IProps {
-    onConfirm: (value: DIFFICULTY_NUMBERS) => void;
+    onConfirm: (value: DIFFICULTY_TYPES) => void;
     onCancel: () => void;
 }
 
 const NewGameModal: FC<IProps> = ({onConfirm, onCancel}) => {
-    const [value, setValue] = useState(DifficultyNames.MEDIUM);
+    const [difficulty, setDifficulty] = useState<DIFFICULTY_TYPES>(DifficultyNames.MEDIUM);
 
-    const onClickRadioButton = (event: ChangeEvent<HTMLInputElement>) =>
-        setValue(event.target.value);
+    const onClickRadioButton = (event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value as DIFFICULTY_TYPES;
+        setDifficulty(value);
+    };
 
-    const createGame = () => onConfirm(DifficultyValues[value]);
+    const createGame = () => onConfirm(difficulty);
 
     useMousetrap("enter", createGame);
     useMousetrap("escape", onCancel);
@@ -35,21 +37,21 @@ const NewGameModal: FC<IProps> = ({onConfirm, onCancel}) => {
                     name="difficulty"
                     labelText={DifficultyLabels.EASY}
                     onChange={onClickRadioButton}
-                    checked={value === DifficultyNames.EASY}
+                    checked={difficulty === DifficultyNames.EASY}
                 />
                 <Radio
                     value={DifficultyNames.MEDIUM}
                     name="difficulty"
                     labelText={DifficultyLabels.MEDIUM}
                     onChange={onClickRadioButton}
-                    checked={value === DifficultyNames.MEDIUM}
+                    checked={difficulty === DifficultyNames.MEDIUM}
                 />
                 <Radio
                     value={DifficultyNames.HARD}
                     name="difficulty"
                     labelText={DifficultyLabels.HARD}
                     onChange={onClickRadioButton}
-                    checked={value === DifficultyNames.HARD}
+                    checked={difficulty === DifficultyNames.HARD}
                 />
             </div>
             <ConfirmationButtons>

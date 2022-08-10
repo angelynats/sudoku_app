@@ -1,9 +1,9 @@
-import React, {FC, useContext} from "react";
+import React, {FC, useCallback, useContext} from "react";
 
 // helpers
 import {ModalContext} from "src/utils/contexts";
 import {useAppDispatch} from "src/utils/hooks";
-import {DIFFICULTY_NUMBERS} from "src/utils/interfaces";
+import {DIFFICULTY_TYPES} from "src/utils/interfaces";
 
 // components
 import {Button} from "../../components";
@@ -19,10 +19,13 @@ const NewGameButton: FC = () => {
     const dispatch = useAppDispatch();
     const {openModal, closeModal} = useContext(ModalContext);
 
-    const handleCreateNewGrid = (value: DIFFICULTY_NUMBERS) => {
-        dispatch(createGrid(value));
-        closeModal();
-    };
+    const handleCreateNewGrid = useCallback(
+        (value: DIFFICULTY_TYPES) => {
+            dispatch(createGrid(value));
+            closeModal();
+        },
+        [closeModal, dispatch]
+    );
 
     const createNewGrid = () => {
         openModal({

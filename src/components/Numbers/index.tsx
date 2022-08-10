@@ -1,44 +1,42 @@
-import React, {FC} from "react";
+import React, {FC, useCallback} from "react";
 
 // helpers
-import {isPuzzleBlock} from "src/utils/helpers";
+import {isNumberAvailable} from "src/utils/helpers";
 import {useAppDispatch, useAppSelector} from "src/utils/hooks";
 import {N} from "src/utils/interfaces";
+import {numberValues} from "src/utils/constants";
 
 // components
 import NumberButton from "./numberButton";
 
 // redux
-import {
-    getChallengeGrid,
-    getSelectedBlock,
-    getSelectedBlockValue
-} from "src/redux/selectors/gridSelectors";
-import {fillBlock} from "src/redux/slices/gridReducer";
+import {getWorkingGrid} from "src/redux/selectors/gridSelectors";
+import {clearBlock, fillBlock} from "src/redux/slices/gridReducer";
 
 // styles
 import {Container} from "./styles";
 
 const Numbers: FC = () => {
     const dispatch = useAppDispatch();
-    const challengeGrid = useAppSelector((state) => getChallengeGrid(state));
-    const selectedBlock = useAppSelector((state) => getSelectedBlock(state));
-    const selectedBlockkValue = useAppSelector((state) => getSelectedBlockValue(state));
+    const workingGrid = useAppSelector((state) => getWorkingGrid(state));
 
-    const handleSelectNumber = (value: N) => {
-        if (
-            selectedBlock &&
-            (selectedBlockkValue === 0 ||
-                !isPuzzleBlock(challengeGrid, selectedBlock[1], selectedBlock[0]))
-        ) {
-            dispatch(fillBlock({value, coords: selectedBlock}));
-        }
-    };
+    const isVisible = (value: N) => isNumberAvailable(workingGrid, value);
+
+    const handleClickNumber = useCallback(
+        (value: N) => (value === 0 ? dispatch(clearBlock()) : dispatch(fillBlock(value))),
+        // eslint-disable-next-line
+        []
+    );
 
     return (
         <Container>
-            {([1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as N[]).map((value) => (
-                <NumberButton key={value} value={value} onSelectNumber={handleSelectNumber} />
+            {numberValues.map((value) => (
+                <NumberButton
+                    key={`number-${value}`}
+                    value={value}
+                    isVisible={isVisible(value)}
+                    onClickNumber={handleClickNumber}
+                />
             ))}
         </Container>
     );

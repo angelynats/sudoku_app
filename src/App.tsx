@@ -1,48 +1,27 @@
-import React, {FC, useMemo} from "react";
+import React, {FC} from "react";
 
 // helpers
 import {useAppSelector} from "./utils/hooks";
 
 // components
-import {
-    Grid,
-    Numbers,
-    NewGameButton,
-    RestartButton,
-    ContinueButton,
-    Title,
-    Content,
-    Card,
-    OptionsContainer
-} from "./components";
+import {Title, Content, Card} from "./components";
+import {GridScreen, MainScreen} from "./containers";
 
 // redux
-import {getChallengeGrid, getIsActiveGame} from "./redux/selectors/gridSelectors";
+import {getIsActiveGame} from "./redux/selectors/gridSelectors";
 
 // styles
 import "./styles/globals.scss";
 
 const App: FC = () => {
-    const challengeGrid = useAppSelector((state) => getChallengeGrid(state));
     const isActiveGame = useAppSelector((state) => getIsActiveGame(state));
-
-    const isShowGrid = useMemo(() => isActiveGame && challengeGrid, [challengeGrid, isActiveGame]);
-    const isShowContinueButton = useMemo(
-        () => !isActiveGame && challengeGrid,
-        [challengeGrid, isActiveGame]
-    );
 
     return (
         <Content>
             <Title>Sudoku</Title>
             <Card>
-                {isShowGrid && <Grid />}
-                <OptionsContainer>
-                    {isShowGrid && <RestartButton />}
-                    {isShowContinueButton && <ContinueButton />}
-                    <NewGameButton />
-                    {isShowGrid && <Numbers />}
-                </OptionsContainer>
+                {!isActiveGame && <MainScreen />}
+                {isActiveGame && <GridScreen />}
             </Card>
         </Content>
     );

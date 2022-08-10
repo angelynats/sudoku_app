@@ -2,6 +2,7 @@ import React, {FC} from "react";
 
 // helpers
 import {useAppDispatch} from "src/utils/hooks";
+import {DIFFICULTY_TYPES} from "src/utils/interfaces";
 
 // components
 import {Button} from "../../components";
@@ -12,7 +13,11 @@ import {toggleIsActiveGame} from "src/redux/slices/gridReducer";
 // styles
 import {Container} from "./styles";
 
-const ContinueButton: FC = () => {
+interface IProps {
+    difficulty: DIFFICULTY_TYPES;
+}
+
+const ContinueButton: FC<IProps> = ({difficulty}) => {
     const dispatch = useAppDispatch();
 
     const continueGame = () => {
@@ -22,7 +27,7 @@ const ContinueButton: FC = () => {
     return (
         <Container>
             <Button type="button" margin="0 0 10px 0" onClick={continueGame}>
-                Continue game
+                Continue game ({difficulty})
             </Button>
         </Container>
     );

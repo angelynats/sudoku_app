@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 
 // helpers
 import {ModalContext} from "./ModalContext";
@@ -11,14 +11,14 @@ export const ModalProvider = ({children}) => {
     const [modalOpened, setModalOpened] = useState(false);
     const [modalContent, setModalContent] = useState(null);
 
-    const openModal = (modalConfig: ModalConfig) => {
+    const openModal = useCallback((modalConfig: ModalConfig) => {
         setModalContent(modalConfig);
         setModalOpened(true);
-    };
+    }, []);
 
-    const closeModal = () => {
+    const closeModal = useCallback(() => {
         setModalOpened(false);
-    };
+    }, []);
 
     const valueModalProvider = {
         isShown: modalOpened,

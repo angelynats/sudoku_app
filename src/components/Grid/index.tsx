@@ -2,7 +2,7 @@ import React, {FC, useContext, useEffect} from "react";
 import useMousetrap from "react-hook-mousetrap";
 
 // helpers
-import {compareArrays, isNumberAvailable, isPuzzleBlock} from "src/utils/helpers";
+import {compareArrays} from "src/utils/helpers";
 import {useAppDispatch, useAppSelector} from "src/utils/hooks";
 import {INDEX, NUMBERS} from "src/utils/interfaces";
 import {ModalContext} from "src/utils/contexts";
@@ -15,7 +15,6 @@ import {ConfirmationModal} from "../Modals";
 import {
     getChallengeGrid,
     getSelectedBlock,
-    getSelectedBlockValue,
     getSolvedGrid,
     getWorkingGrid
 } from "src/redux/selectors/gridSelectors";
@@ -30,7 +29,6 @@ const Grid: FC = () => {
     const solvedGrid = useAppSelector((state) => getSolvedGrid(state));
     const workingGrid = useAppSelector((state) => getWorkingGrid(state));
     const challengeGrid = useAppSelector((state) => getChallengeGrid(state));
-    const selectedBlockkValue = useAppSelector((state) => getSelectedBlockValue(state));
 
     const {openModal, closeModal} = useContext(ModalContext);
 
@@ -38,32 +36,22 @@ const Grid: FC = () => {
         if (compareArrays(workingGrid, solvedGrid)) {
             openModal({
                 title: "Congratulations!",
-                children: <ConfirmationModal message="You win a game" onCancel={closeModal} />
+                children: (
+                    <ConfirmationModal
+                        showButtons={false}
+                        message="You win a game"
+                        onCancel={closeModal}
+                    />
+                )
             });
             dispatch(selectBlock(null));
         }
         // eslint-disable-next-line
     }, [workingGrid, solvedGrid]);
 
-    const fill = (n: NUMBERS) => {
-        if (
-            selectedBlock &&
-            isNumberAvailable(workingGrid, n) &&
-            (selectedBlockkValue === 0 ||
-                !isPuzzleBlock(challengeGrid, selectedBlock[1], selectedBlock[0]))
-        ) {
-            dispatch(fillBlock({value: n, coords: selectedBlock}));
-        }
-    };
+    const fill = (n: NUMBERS) => dispatch(fillBlock(n));
 
-    const clear = () => {
-        if (
-            selectedBlock &&
-            selectedBlockkValue !== 0 &&
-            !isPuzzleBlock(challengeGrid, selectedBlock[1], selectedBlock[0])
-        )
-            dispatch(clearBlock(selectedBlock));
-    };
+    const clear = () => dispatch(clearBlock());
 
     const moveDown = () => {
         if (selectedBlock && selectedBlock[0] < 8)
@@ -106,10 +94,10 @@ const Grid: FC = () => {
         <Container>
             {challengeGrid.map((row, rowIndex) => {
                 return (
-                    <Row key={rowIndex}>
+                    <Row key={`row-${rowIndex}`}>
                         {row.map((item, colIndex) => (
                             <Block
-                                key={colIndex}
+                                key={`block-${colIndex}`}
                                 rowIndex={rowIndex as INDEX}
                                 colIndex={colIndex as INDEX}
                             />

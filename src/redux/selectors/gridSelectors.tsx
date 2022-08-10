@@ -13,6 +13,8 @@ export const getSolvedGrid = (state: RootState) => state.gridReducer.solvedGrid;
 
 export const getIsActiveGame = (state: RootState) => state.gridReducer.isActiveGame;
 
+export const getGridDifficulty = (state: RootState) => state.gridReducer.gridDifficulty;
+
 export const getSelectedBlockValue = createSelector(
     [getSelectedBlock, getWorkingGrid],
     (selectedBlock, workingGrid): N =>

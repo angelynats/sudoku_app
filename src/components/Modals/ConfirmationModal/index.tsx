@@ -8,12 +8,13 @@ import {Text, Button} from "src/components";
 import {ConfirmationButtons, ModalWrapper} from "./styles";
 
 interface IProps {
+    showButtons?: boolean;
     message?: string;
     onCancel: () => void;
     onConfirm?: () => void;
 }
 
-const ConfirmationModal: FC<IProps> = ({message, onCancel, onConfirm}) => {
+const ConfirmationModal: FC<IProps> = ({showButtons = true, message, onCancel, onConfirm}) => {
     useMousetrap("enter", onConfirm);
     useMousetrap("escape", onCancel);
     return (
@@ -27,18 +28,20 @@ const ConfirmationModal: FC<IProps> = ({message, onCancel, onConfirm}) => {
                     {message}
                 </Text>
             )}
-            <ConfirmationButtons>
-                {onConfirm && (
-                    <Button type="button" margin="0 20px 0 0" onClick={onConfirm}>
-                        Yes
-                    </Button>
-                )}
-                {onCancel && (
-                    <Button type="button" variant="light" onClick={onCancel}>
-                        No
-                    </Button>
-                )}
-            </ConfirmationButtons>
+            {showButtons && (
+                <ConfirmationButtons>
+                    {onConfirm && (
+                        <Button type="button" margin="0 20px 0 0" onClick={onConfirm}>
+                            Yes
+                        </Button>
+                    )}
+                    {onCancel && (
+                        <Button type="button" variant="light" onClick={onCancel}>
+                            No
+                        </Button>
+                    )}
+                </ConfirmationButtons>
+            )}
         </ModalWrapper>
     );
 };

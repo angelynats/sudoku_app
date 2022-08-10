@@ -8,7 +8,9 @@ export type N = 0 | NUMBERS;
 
 export type NUMBERS = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
-export type DIFFICULTY_NUMBERS = 3 | 5 | 8;
+export type DIFFICULTY_NUMBERS = number;
+
+export type DIFFICULTY_TYPES = "easy" | "medium" | "hard";
 
 export type ROW = [N, N, N, N, N, N, N, N, N];
 
@@ -22,6 +24,25 @@ export interface IGridReducer {
     solvedGrid?: GRID;
     workingGrid?: GRID;
     isActiveGame?: boolean;
+    gridDifficulty?: DIFFICULTY_TYPES;
+}
+
+export interface IDifficultyNames {
+    EASY: DIFFICULTY_TYPES;
+    MEDIUM: DIFFICULTY_TYPES;
+    HARD: DIFFICULTY_TYPES;
+}
+
+export interface IDifficultyValues {
+    easy: DIFFICULTY_NUMBERS;
+    medium: DIFFICULTY_NUMBERS;
+    hard: DIFFICULTY_NUMBERS;
+}
+
+export interface IDifficultyLabels {
+    EASY: string;
+    MEDIUM: string;
+    HARD: string;
 }
 
 export interface BlockData {

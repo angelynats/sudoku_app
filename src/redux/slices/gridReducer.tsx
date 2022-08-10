@@ -1,41 +1,59 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 // helpers
-import {BLOCK_COORDS, DIFFICULTY_NUMBERS, IGridReducer, N} from "src/utils/interfaces";
-import {copyGrid, createFullGrid, removeGridNumbers} from "src/utils/helpers";
-
-type IPayload = {value: N; coords: BLOCK_COORDS};
+import {BLOCK_COORDS, DIFFICULTY_TYPES, IGridReducer, N} from "src/utils/interfaces";
+import {
+    copyGrid,
+    createFullGrid,
+    removeGridNumbers,
+    isPuzzleBlock,
+    isNumberAvailable
+} from "src/utils/helpers";
+import {DifficultyNames, difficultyValues} from "src/utils/constants";
 
 const initialState: IGridReducer = {
     challengeGrid: null,
     solvedGrid: null,
     workingGrid: null,
     selectedBlock: null,
-    isActiveGame: false
+    isActiveGame: false,
+    gridDifficulty: DifficultyNames.MEDIUM
 };
 
 const gridSlice = createSlice({
     name: "grid",
     initialState: initialState,
     reducers: {
-        createGrid: (state, {payload}: PayloadAction<DIFFICULTY_NUMBERS>) => {
+        createGrid: (state, {payload}: PayloadAction<DIFFICULTY_TYPES>) => {
             const solvedGrid = createFullGrid();
             const gridCopy = copyGrid(solvedGrid);
-            const challengeGrid = removeGridNumbers(gridCopy, payload);
+            const challengeGrid = removeGridNumbers(gridCopy, difficultyValues[payload]);
             const workingGrid = copyGrid(challengeGrid);
 
             state.challengeGrid = challengeGrid;
             state.solvedGrid = solvedGrid;
             state.workingGrid = workingGrid;
             state.isActiveGame = true;
+            state.gridDifficulty = payload;
         },
-        fillBlock: (state, {payload}: PayloadAction<IPayload>) => {
-            if (state.workingGrid) {
-                state.workingGrid[payload.coords[0]][payload.coords[1]] = payload.value;
+        fillBlock: (state, {payload}: PayloadAction<N>) => {
+            const selectedBlock = state.selectedBlock;
+            const isEditableBlock =
+                selectedBlock &&
+                isNumberAvailable(state.workingGrid, payload) &&
+                !isPuzzleBlock(state.challengeGrid, selectedBlock[1], selectedBlock[0]);
+            if (isEditableBlock) {
+                state.workingGrid[selectedBlock[0]][selectedBlock[1]] = payload;
             }
         },
-        clearBlock: (state, {payload}: PayloadAction<BLOCK_COORDS>) => {
-            state.workingGrid[payload[0]][payload[1]] = 0;
+        clearBlock: (state) => {
+            const selectedBlock = state.selectedBlock;
+            const isEditableBlock =
+                selectedBlock &&
+                !isPuzzleBlock(state.challengeGrid, selectedBlock[1], selectedBlock[0]);
+            if (isEditableBlock) {
+                state.workingGrid[selectedBlock[0]][selectedBlock[1]] = 0;
+            }
         },
         clearSolutions: (state) => {
             state.workingGrid = state.challengeGrid;

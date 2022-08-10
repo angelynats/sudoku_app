@@ -1,12 +1,7 @@
-import React, {FC, useMemo} from "react";
+import React, {FC} from "react";
 
 // helpers
-import {isNumberAvailable} from "src/utils/helpers";
-import {useAppSelector} from "src/utils/hooks";
 import {N} from "src/utils/interfaces";
-
-// redux
-import {getWorkingGrid} from "src/redux/selectors/gridSelectors";
 
 // styles
 import {ContainerNumber} from "../styles";
@@ -14,19 +9,16 @@ import {ButtonCommon} from "src/components/styles";
 
 interface IProps {
     value: N;
-    onSelectNumber: (value: N) => void;
+    isVisible: boolean;
+    onClickNumber: (value: N) => void;
 }
 
-const NumberButton: FC<IProps> = ({value, onSelectNumber}) => {
-    const workingGrid = useAppSelector((state) => getWorkingGrid(state));
-
-    const isVisible = useMemo(() => isNumberAvailable(workingGrid, value), [workingGrid, value]);
-
+const NumberButton: FC<IProps> = ({value, isVisible, onClickNumber}) => {
     return (
         <ContainerNumber>
             <ButtonCommon
                 disabled={!isVisible}
-                onClick={() => onSelectNumber(value)}
+                onClick={() => onClickNumber(value)}
                 fontSize="32px"
                 color={isVisible ? "blackLight" : "greyLight"}
             >
@@ -36,4 +28,4 @@ const NumberButton: FC<IProps> = ({value, onSelectNumber}) => {
     );
 };
 
-export default NumberButton;
+export default React.memo(NumberButton);
