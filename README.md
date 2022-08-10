@@ -19,4 +19,5 @@ cd sudoku-app
 
 npm install / yarn install
 
-Enjoy the game!
+## Enjoy the game!
+Play: https://angelynats.github.io/sudoku_app/
